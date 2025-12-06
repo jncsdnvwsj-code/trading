@@ -41,5 +41,20 @@ def montecarlo(S, vol, r, T,K, N,n):
         Payoff.append(european_call(stock_path(S, vol, r, T, N),K))
     return[exp(-r*T)*mean(Payoff), 1.96*std(Payoff)/sqrt(n)]
 
+def delta(S, K, vol, r, T):
+    return phi(d_1(S, K, vol, r, T))
+
+def gamma(S, K, vol, r, T):
+    return delta(S, K, vol, r, T)/(S * vol * sqrt(T))
+
+def rho(S, K, vol, r, T):
+    return K * T * exp(-r*T)*delta(S, K, vol, r, T)
+
+def theta(S, K, vol, r, T):
+    return - S * delta(S, K, vol, r, T) * vol / (2 * sqrt(T)) - r*K*exp(-r*T)*delta(S, K, vol, r, T)
+
+def vega(S, K, vol, r, T):
+    return S*delta(S, K, vol, r, T)*sqrt(T)
+
 print(BS_european_price(S, K, vol, r, T))
 print(montecarlo(S, vol, r, T,K, N, n))
