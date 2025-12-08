@@ -21,9 +21,9 @@ def BinomialStock(p,alpha,sigma,S0,T,N):
         StockPrices[i,i]=StockPrices[i-1,i-1]*exp(d)
     return [TimePoints,StockPrices.T]
     
-[TimePoints,StockPrices]=BinomialStock(0.5,0.01,0.2,10,1/12,1000)
-print("TimePoints:\n",TimePoints)
-print("StockPrices:\n", StockPrices)
+#[TimePoints,StockPrices]=BinomialStock(0.5,0.01,0.2,10,1/12,1000)
+#print("TimePoints:\n",TimePoints)
+#print("StockPrices:\n", StockPrices)
 
 #Define few payoffs
 def StandardCall(S,K):
@@ -46,16 +46,16 @@ def BinomialEuropean(p,alpha,sigma,r,S0,K,T,N,OptionType):
     [h,u,d]=FindParameters(p,alpha,sigma,T,N)
     [q_u,q_d]=RiskFreeProbability(r,h,u,d)
     [TimePoints,StockPrices]=BinomialStock(p,alpha,sigma,S0,T,N)
-    PayOff=numpy.array([[OptionType(StockPrices[j,i],K) for i in range(N+1)]  for j in range(N+1)])
+    Payoff=numpy.array([[OptionType(StockPrices[j,i],K) for i in range(N+1)]  for j in range(N+1)])
     Price=zeros((N+1,N+1))
     for i in range(N+1):
-        Price[i,N]=PayOff[i,N]
+        Price[i,N]=Payoff[i,N]
     for j in range(N):
         for i in range(N-j):
             Price[i,N-j-1]=exp(-r*h)*(q_u * Price[i,N-j]+q_d * Price[i+1,N-j])
-    return(Price)
+    return(Price[0, 1])
 
-print("Binomial European price:\n",BinomialEuropean(0.5,0.01,0.2,0.01,10,10,1/12,1000,StandardCall))
+print("Binomial European fair price at t=0:\n",BinomialEuropean(0.5,0.01,0.2,0.01,10,10,1/12,1000,StandardCall))
 
 #Define binomial American call price
 def BinomialAmerican(p,alpha,sigma,r,S0,K,T,N,OptionType):
@@ -76,9 +76,9 @@ def BinomialAmerican(p,alpha,sigma,r,S0,K,T,N,OptionType):
             CashFlow[i,N-j-1]=max(PayOff[i,N-j-1]-exp(-r*h)*(q_u * Price[i,N-j]+q_d * Price[i+1,N-j]),0)
     return [Price,CashFlow]
 
-[Price,CashFlow]=BinomialAmerican(0.5,0.01,0.2,0.01,10,10,1/12,5,StandardPut)
-print("Binomial American price:\n",Price)
-print("Cash flow:\n", CashFlow)
+#[Price,CashFlow]=BinomialAmerican(0.5,0.01,0.2,0.01,10,10,1/12,5,StandardPut)
+#print("Binomial American price:\n",Price)
+#print("Cash flow:\n", CashFlow)
 
 def PayOffVector(StockPrices,N,K, OptionType):
     PayOff=[]
@@ -111,4 +111,4 @@ def BinomialAsianDirect(p,alpha,sigma,r,S0,K,T,N,OptionType):
         PriceVector=reducePriceVector(PriceVector,q_u,q_d,r,h)
     return(PriceVector[0])
     
-print("Binomial Asian price:",BinomialAsianDirect(0.5,0.01,0.2,0.01,10,10,1/12,5,AsianCall))
+#print("Binomial Asian price:",BinomialAsianDirect(0.5,0.01,0.2,0.01,10,10,1/12,5,AsianCall))
