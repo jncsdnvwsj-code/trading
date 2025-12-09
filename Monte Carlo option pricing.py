@@ -18,8 +18,9 @@ def stock_price_path():
         path.append(path[i] * exp((r - vol**2 / 2) * dt + vol * sqrt(dt) * Z))
     return path
 
+
+M = 10000
 plt.figure(figsize=(10, 6))
-M = 100
 
 for _ in range(M):
     path = stock_price_path()
@@ -42,6 +43,6 @@ def MC_asian_call(n):
     payoff=[]
     for _ in range(n):
         payoff.append(asian_call(stock_price_path()))
-    return[exp(-r*T)*mean(payoff), 1.96*std(payoff)/sqrt(n)]
+    return exp(-r*T)*mean(payoff)
 
 print(MC_asian_call(100))
